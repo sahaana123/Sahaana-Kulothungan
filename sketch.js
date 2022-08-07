@@ -50,27 +50,27 @@ function setup(){
     var rotator_options={
       // isStatic=true
       // isStatic true
-      // isStatic:false
+       //isStatic:false
        isStatic:true
     };
 
-     rotator1 = rectangle(250,200,150,20,rotator_options);
-     World.add(world,rotator1);
-
-    // rotator1 = Bodies.rectangle();
+     //rotator1 = rectangle(250,200,150,20,rotator_options);
     // World.add(world,rotator1);
+
+     //rotator1 = Bodies.rectangle();
+     //World.add(world,rotator1);
 
     // rotator1 = Bodies.circle(250,200,150,20,rotator_options);
     // World.add(world,rotator1);
 
-    // rotator1 = Bodies.rectangle(250,200,150,20,rotator_options);
-    // World.add(world,rotator1);
+     rotator1 = Bodies.rectangle(250,200,150,20,rotator_options);
+     World.add(world,rotator1);
 
-    rotator2 = Bodies.rectangle(250,200,150,20,rotator_options);
-    World.add(world,rotator2);
+     rotator2 = Bodies.rectangle(250,200,150,20,rotator_options);
+     World.add(world,rotator2);
 
-    rotator3 = Bodies.rectangle(250,200,150,20,rotator_options);
-    World.add(world,rotator3);
+     rotator3 = Bodies.rectangle(250,200,150,20,rotator_options);
+     World.add(world,rotator3);
 
     //styling the bodies here
     fill("brown");
