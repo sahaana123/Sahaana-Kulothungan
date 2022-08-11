@@ -1,123 +1,138 @@
-const Engine = Matter.Engine;
-const World= Matter.World;
-const Bodies = Matter.Bodies;
+var fireballImg, fireball, fireballsGroup;
+var robotImg, robot;
+var spaceImg, space;
+var robotvillainImg, robotvillain;
+var invisibleBlockGroup, invisibleBlock;
+var spookysound;
 
-var engine, world;
+var rightBoundary;
+var leftBoundary;
+var gameState = "play";
 
-var particle1, particle2,particle3,particle4,particle5;
-var particle6, particle7,particle8,particle9,particle10;
-var rotator1, rotator2, rotator3;
-var block1, block2;
-
-var angle1=60;
-var angle2=60;
-var angle3=60;
-
-function setup(){
-    var canvas = createCanvas(550,600);
-    engine = Engine.create();
-    world = engine.world;
-
-    //created plane and block bodies
-    var plane_options={
-      isStatic: true
-    }
-
-    plane = Bodies.rectangle(600,height,1200,20,plane_options);
-    World.add(world,plane);
-    block1=Bodies.rectangle(100,400,150,20,plane_options);
-    World.add(world,block1);
-    block2=Bodies.rectangle(400,400,150,20,plane_options);
-    World.add(world,block2);
-
-    //created multiple of particle bodies 
-    var particle_options = {
-      restitution:0.4,
-      friction:0.02
-    }
-
-    particle1 = Bodies.circle(220,10,10,particle_options);
-    World.add(world,particle1);
-    particle2 = Bodies.circle(220,10,10,particle_options);
-    World.add(world,particle2);
-    particle3 = Bodies.circle(225,10,10,particle_options);
-    World.add(world,particle3);
-    particle4 = Bodies.circle(230,10,10,particle_options);
-    World.add(world,particle4);
-    particle5 =Bodies.circle(230,10,10,particle_options);
-    World.add(world,particle5);
-
-    var rotator_options={
-      // isStatic=true
-      // isStatic true
-       //isStatic:false
-       isStatic:true
-    };
-
-     //rotator1 = rectangle(250,200,150,20,rotator_options);
-    // World.add(world,rotator1);
-
-     //rotator1 = Bodies.rectangle();
-     //World.add(world,rotator1);
-
-    // rotator1 = Bodies.circle(250,200,150,20,rotator_options);
-    // World.add(world,rotator1);
-
-     rotator1 = Bodies.rectangle(250,200,150,20,rotator_options);
-     World.add(world,rotator1);
-
-     rotator2 = Bodies.rectangle(250,200,150,20,rotator_options);
-     World.add(world,rotator2);
-
-     rotator3 = Bodies.rectangle(250,200,150,20,rotator_options);
-     World.add(world,rotator3);
-
-    //styling the bodies here
-    fill("brown");
-    rectMode(CENTER);
-    ellipseMode(RADIUS);
-
-}
-
-function draw(){
-    background("lightgreen");
-    Engine.update(engine);
-
-  //created shape for plane and stand
-  rect(plane.position.x,plane.position.y,1200,20);
-  rect(block1.position.x,block1.position.y,150,20);
-  rect(block2.position.x,block2.position.y,150,20);
-
-  //created shape for all the paticles
-  ellipse(particle1.position.x,particle1.position.y,10);
-  ellipse(particle2.position.x,particle2.position.y,10);
-  ellipse(particle3.position.x,particle3.position.y,10);
-  ellipse(particle4.position.x,particle4.position.y,10);
-  ellipse(particle5.position.x,particle5.position.y,10);
-
-  //created shape for all the rotators
-  Matter.Body.rotate(rotator1,angle1)
-  push();
-  translate(rotator1.position.x,rotator1.position.y);
-  rotate(angle1);
-  rect(0,0,150,20);
-  pop();
-  angle1 +=0.2;
-
-  Matter.Body.rotate(rotator2,angle2)
-  push();
-  translate(rotator2.position.x,rotator2.position.y);
-  rotate(angle2);
-  rect(0,0,150,20);
-  pop();
-  angle2 +=0.3;
-
-  Matter.Body.rotate(rotator3,angle3)
-  push();
-  translate(rotator3.position.x,rotator3.position.y);
-  rotate(angle3);
-  rect(0,0,150,20);
-  pop();
-  angle3 +=0.4;
+function preload(){
+    fireballImg = loadImage("Fireball.png");
+    robotImg = loadImage("robot_running.png");
+    spaceImg = loadImage("Green.jpg");
+    spookysound =loadSound("makai-symphony-dragon-slayer.mp3");
+    robotvillainImg= loadImage("Robot_spaceship.png");
+  }
+  
+  function setup(){
+    createCanvas(600,600);
+    spookysound.loop();
+    space = createSprite(300,300);
+    space.addImage("space",spaceImg);
+    space.velocityY = 1;
+  
+    fireballsGroup = new Group();
+    //fireball.scale= 0.3;
+    invisibleBlockGroup = new Group();
     
-}
+    robot = createSprite(310,515,100,100);
+    robot.scale = 0.3;
+    robot.addImage("robot", robotImg);
+
+    robot.setCollider("rectangle",0,0,robot.width,robot.height);
+    robot.debug = false;
+  
+   
+    
+
+     
+    }
+
+    function draw(){
+      background(0);
+      if (gameState === "play") {
+        
+       
+       robot.x=World.mouseX
+
+    
+        
+        if(space.y > 300){
+           space.y =60
+          robot.velocityY= 0;
+        }  
+    
+
+        if(fireballsGroup.isTouching(robot)){
+          robot.velocityY = 0;
+          robot.destroy();
+          gameState = "end"
+        }
+        if(invisibleBlockGroup.isTouching(robot) || robot.y > 600){
+         robot.destroy();
+          gameState = "end"
+        }
+      
+    
+
+        spawnFireballs();
+        drawSprites();
+      }
+      
+      
+      
+      if (gameState === "end"){
+        stroke("yellow");
+        fill("yellow");
+        textSize(30);
+        text("Game Over", 230,250)
+      }
+    
+    }
+
+    function spawnFireballs() {
+      //write code here to spawn the fireballs in the space
+      if (frameCount % 240 === 0) {
+        var fireball = createSprite(200, 30);
+        fireball.scale=0.2;
+       
+        var invisibleBlock = createSprite(200,15);
+        invisibleBlock.width = fireball.width;
+        invisibleBlock.height = 2;
+        invisibleBlock.scale=0.2;
+
+        var robotvillain = createSprite(200,65);
+        robotvillain.scale=0.3;
+
+        fireball.x = Math.round(random(120,400));
+        
+        invisibleBlock.x = fireball.x;
+        robotvillain.x = fireball.x;
+        
+        
+        fireball.addImage(fireballImg);
+      
+        invisibleBlock.addImage(fireballImg);
+        robotvillain.addImage(robotvillainImg);
+
+        fireball.velocityY = 1;
+        invisibleBlock.velocityY = 1;
+        
+      fireballsGroup.velocityY=fireballsGroup.velocityY + 2
+      invisibleBlock.velocityY=invisibleBlock.velocityY + 3
+        
+        //assign lifetime to the variable
+        fireball.lifetime = 800
+        robotvillain.lifetime = 200;
+        invisibleBlock.lifetime = 800;
+    
+        
+        //add each fireball to the group
+        fireballsGroup.add(fireball);
+        fireball.debug = true;
+        invisibleBlockGroup.add(invisibleBlock);
+        invisibleBlock.debug = true;
+
+      }
+    }
+    
+    
+    
+  
+  
+
+
+
