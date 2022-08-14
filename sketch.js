@@ -15,6 +15,7 @@ function preload(){
     spaceImg = loadImage("Green.jpg");
     spookysound =loadSound("makai-symphony-dragon-slayer.mp3");
     robotvillainImg= loadImage("Robot_spaceship.png");
+    
   }
   
   function setup(){
@@ -32,10 +33,11 @@ function preload(){
     robot.scale = 0.3;
     robot.addImage("robot", robotImg);
 
-    robot.setCollider("rectangle",0,0,robot.width,robot.height);
-    robot.debug = false;
+    //robot.setCollider("rectangle",0,0,robot.width,robot.height);
+   // robot.debug = false;
   
-   
+    
+  
     
 
      
@@ -44,17 +46,23 @@ function preload(){
     function draw(){
       background(0);
       if (gameState === "play") {
-        
-       
-       robot.x=World.mouseX
-
+       if(keyDown("left_arrow")){
+            robot.x = robot.x - 1;
+          }
+          
+          if(keyDown("right_arrow")){
+            robot.x = robot.x + 1;
+          }
+          
+          if(keyDown("space")){
+            robot.velocityY = 0;
+          }
     
-        
-        if(space.y > 300){
+          if(space.y > 300){
            space.y =60
           robot.velocityY= 0;
         }  
-    
+        spawnFireballs();
 
         if(fireballsGroup.isTouching(robot)){
           robot.velocityY = 0;
@@ -65,13 +73,10 @@ function preload(){
          robot.destroy();
           gameState = "end"
         }
-      
+       drawSprites()
+    }
     
-
-        spawnFireballs();
-        drawSprites();
-      }
-      
+     
       
       
       if (gameState === "end"){
@@ -111,8 +116,8 @@ function preload(){
         fireball.velocityY = 1;
         invisibleBlock.velocityY = 1;
         
-      fireballsGroup.velocityY=fireballsGroup.velocityY + 2
-      invisibleBlock.velocityY=invisibleBlock.velocityY + 3
+      //fireballsGroup.velocityY=fireballsGroup.velocityY + 2
+      //invisibleBlock.velocityY=invisibleBlock.velocityY + 3
         
         //assign lifetime to the variable
         fireball.lifetime = 800
@@ -128,9 +133,7 @@ function preload(){
 
       }
     }
-    
-    
-    
+   
   
   
 
